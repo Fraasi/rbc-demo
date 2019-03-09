@@ -1,0 +1,19 @@
+.ReactModal__Overlay {
+  z-index: 5;
+  background-color: rgba(51, 51, 51, 0.75) !important;
+  opacity: 0;
+  transition: opacity 1000ms ease-in-out;
+}
+
+.ReactModal__Overlay--after-open{
+  /* background-color: rgba(51, 51, 51, 0.75); */
+  opacity: 1;
+}
+
+.ReactModal__Overlay--before-close{
+  opacity: 0;
+}
+
+input {
+  text-align: center;
+}

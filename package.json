@@ -4,7 +4,10 @@
   "private": true,
   "dependencies": {
     "react": "^16.8.2",
+    "react-big-calendar": "^0.20.3",
+    "react-datepicker": "^2.1.0",
     "react-dom": "^16.8.2",
+    "react-modal": "^3.8.1",
     "react-scripts": "2.1.5"
   },
   "scripts": {
@@ -21,5 +24,8 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "moment": "^2.24.0"
+  }
 }
