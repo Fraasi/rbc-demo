@@ -17,3 +17,8 @@
 input {
   text-align: center;
 }
+
+textarea {
+  width: 50%;
+  height: 100px;
+}

@@ -33,14 +33,10 @@ export default class Calendar extends Component {
         title: 'Title',
         start: new Date(),
         end: new Date(),
-        details: 'Details',
+        desc: 'Description',
       },
     }
   }
-
-  // componentDidMount() {
-  //   this.resizeEvent()
-  // }
 
   moveEvent = ({ event, start, end, isAllDay: droppedOnAllDaySlot }) => {
     const { events } = this.state
@@ -82,27 +78,13 @@ export default class Calendar extends Component {
     console.log('doubleClickEvent:', e)
   }
 
-  selectSlot = (e) => {
+  selectSlot = (event) => {
     // console.log('selectSlot:', e)
-    // new event
-    // const title = window.prompt('New Event name')
-    // if (title)
-    //   this.setState({
-    //     events: [
-    //       ...this.state.events,
-    //       {
-    //         start,
-    //         end,
-    //         title,
-    //       },
-    //     ],
-    //   })
-    this.openModal(e)
+    this.openModal(event)
   }
 
-  selectEvent = (e) => {
-    // console.log('SelectEvent:', e)
-    this.openModal(e)
+  selectEvent = (event) => {
+    this.openModal(event)
   }
 
   getEventStyle(event, start, end, isSelected) {
@@ -119,9 +101,9 @@ export default class Calendar extends Component {
   openModal = (event) => {
     // console.log('currentevent:', event)
     this.setState({
-       modalIsOpen: true,
-       currentEvent: event
-     });
+      modalIsOpen: true,
+      currentEvent: event
+    });
   }
 
   closeModal = () => {
@@ -129,13 +111,60 @@ export default class Calendar extends Component {
   }
 
   handleModalEventEdit = (key, newValue) => {
-    const newData = {...this.state.currentEvent}
-    console.log('newData:', newData)
+    const newData = { ...this.state.currentEvent }
     newData[key] = newValue
-    console.log('newData:', newData)
+    // console.log('newData:', newData)
     this.setState({
       currentEvent: newData
     })
+  }
+
+  handleEventSave = () => {
+    console.log('handleEventSave:', this.state.currentEvent)
+    const index = this.state.events.findIndex(event => event.id === this.state.currentEvent.id )
+    const { title, start, end, desc, id } = this.state.currentEvent
+    if (index > -1) {
+      const newEvents = this.state.events
+      newEvents[index] = {
+        title,
+        start,
+        end,
+        desc,
+        id,
+      }
+      this.setState({
+        events: newEvents
+      })
+    } else {
+      const newID = this.state.events.reduce((acc, event) => {
+        return event.id > acc ? event.id : acc
+      }, 0)
+      this.setState({
+        events: [
+          ...this.state.events,
+          {
+            title,
+            start,
+            end,
+            desc,
+            id: newID + 1
+          },
+        ],
+      })
+    }
+  }
+
+  handleEventDelete = () => {
+    const index = this.state.events.findIndex(event => {
+      return event.id === this.state.currentEvent.id
+    })
+    if (index > -1) {
+      const newEvents = this.state.events
+      newEvents.splice(index, 1)
+      this.setState({
+        events: newEvents
+      })
+    }
   }
 
   render() {
@@ -145,7 +174,7 @@ export default class Calendar extends Component {
           localizer={localizer}
           formats={formats}
           events={this.state.events}
-          defaultView={'week'}
+          defaultView={'month'}
           min={moment('10:00am', 'H:mma').toDate()}
           max={moment('09:59pm', 'H:mma').toDate()}
           step={60}
@@ -160,9 +189,9 @@ export default class Calendar extends Component {
           popup={true}
           tooltipAccessor={(e) => e.title}
           eventPropGetter={this.getEventStyle}
-          // culture="fi-FI"
+        // culture="fi-FI"
         />
-        <Modal modalIsOpen={this.state.modalIsOpen} closeModal={this.closeModal} handleModalEventEdit={this.handleModalEventEdit} currentEvent={this.state.currentEvent}/>
+        <Modal modalIsOpen={this.state.modalIsOpen} closeModal={this.closeModal} handleModalEventEdit={this.handleModalEventEdit} currentEvent={this.state.currentEvent} handleEventSave={this.handleEventSave} handleEventDelete={this.handleEventDelete}/>
       </>
     )
   }

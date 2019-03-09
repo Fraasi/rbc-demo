@@ -25,30 +25,41 @@ export default class Modal extends Component {
     console.log('componentDidMount')
 
   }
-  
+
   componentWillUnmount() {
     console.log('componentWillUnmount:')
-
   }
+
   handleTitleChange = (newTitle) => {
     this.props.handleModalEventEdit('title', newTitle.target.value)
   }
+
   handleStartDateChange = (newStartDate) => {
-    console.log('newStartDate:', newStartDate)
+    // console.log('newStartDate:', newStartDate)
     this.props.handleModalEventEdit('start', newStartDate)
   }
-  
+
   handleEndDateChange = (newEndDate) => {
     this.props.handleModalEventEdit('end', newEndDate)
   }
 
-  handleDetailsChange = (newDetails) => {
-    this.props.handleModalEventEdit('details', newDetails.target.value)
+  handleDescChange = (newDescription) => {
+    this.props.handleModalEventEdit('desc', newDescription.target.value)
+  }
+
+  handleEditSave = () => {
+    this.props.handleEventSave()
+    this.props.closeModal()
+  }
+
+  handleEditDelete = () => {
+    this.props.handleEventDelete()
+    this.props.closeModal()
   }
 
   render() {
     const { modalIsOpen, closeModal } = this.props
-    const { title, start, end, details } = this.props.currentEvent
+    const { title, start, end, desc, id } = this.props.currentEvent
 
     return (
       <ReactModal
@@ -59,9 +70,10 @@ export default class Modal extends Component {
         onRequestClose={closeModal}
         closeTimeoutMS={150}
       >
-        <h3>
-          <input type="text" value={title} onChange={this.handleTitleChange} />
-        </h3>
+        <label htmlFor="id-num">Event id: ({id})</label>
+        <input type="text" value={title} onChange={this.handleTitleChange} placeholder="Title" required/>
+        <br />
+        <br />
         <label htmlFor="start-time">Event start </label>
         <DatePicker
           selected={start}
@@ -96,13 +108,14 @@ export default class Modal extends Component {
         <br />
 
         <p>
-          <textarea onChange={this.handleDetailsChange} defaultValue={details} />
+          <textarea onChange={this.handleDescChange} value={desc} placeholder="description" />
         </p>
 
 
-        <button onClick={closeModal}>save</button>
+        <button onClick={this.handleEditSave}>save</button>
+        { id && <button onClick={this.handleEditDelete}>delete event</button> }
         <button onClick={closeModal}>cancel</button>
-        <button onClick={closeModal}>delete event</button>
+        
       </ReactModal>
     )
   }
