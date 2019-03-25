@@ -18,7 +18,7 @@
   margin: 20px auto;
 }
 
-.date-input-button, .modal-buttons > button {
+.date-input-button, .modal-buttons > button, input[type="text"], input[type="submit"] {
   padding: 5px;
   background-color: lightgrey;
   cursor: pointer;
@@ -30,7 +30,7 @@ input, .react-datepicker-wrapper {
 }
 
 .modal-buttons {
-  width: 220px;
+  width: 235px;
   margin: 40px auto;
 }
 

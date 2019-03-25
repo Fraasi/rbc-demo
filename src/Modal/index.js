@@ -13,16 +13,17 @@ const modalCustomStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
-    width: '60vw',
+    width: '50vw',
     height: '55vh',
     overflow: 'visible'
   }
 }
 
-class DateInputButton extends React.Component {
+class DateInputButton extends Component {
   render() {
     return (
       <button
+        type="button"
         className="date-input-button"
         onClick={this.props.onClick}>
         {this.props.value}
@@ -32,37 +33,51 @@ class DateInputButton extends React.Component {
 }
 
 export default class Modal extends Component {
+  constructor(props) {
+    super(props);
+    console.log('constructor:', props)
+    const { title, start, end, desc, id } = this.props.currentEvent
+    this.state = {
+        title: title || '',
+        start: start || new Date(),
+        end: end || new Date(),
+        desc: desc || '',
+        id: id || 999,
+    }
+  }
 
-  handleTitleChange = (newTitle) => {
-    this.props.handleModalEventEdit('title', newTitle.target.value)
+  handleTitleChange = (e) => {
+    this.setState({ title: e.target.value })
   }
 
   handleStartDateChange = (newStartDate) => {
-    // console.log('newStartDate:', newStartDate)
-    this.props.handleModalEventEdit('start', newStartDate)
+    console.log('newStartDate:', newStartDate)
+    this.setState({ start: newStartDate })
   }
 
   handleEndDateChange = (newEndDate) => {
-    this.props.handleModalEventEdit('end', newEndDate)
+    this.setState({ end: newEndDate })
   }
 
-  handleDescChange = (newDescription) => {
-    this.props.handleModalEventEdit('desc', newDescription.target.value)
+  handleDescChange = (e) => {
+    this.setState({ desc: e.target.value })
   }
 
-  handleEditSave = () => {
-    this.props.handleEventSave()
+  handleDeleteButton = () => {
+    this.props.handleEventDelete()
     this.props.closeModal()
   }
 
-  handleEditDelete = () => {
-    this.props.handleEventDelete()
+  handleSubmitButton = (e) => {
+    e.preventDefault()
+    console.log('submit:', this.state)
+    this.props.handleEventSave(this.state)
     this.props.closeModal()
   }
 
   render() {
     const { modalIsOpen, closeModal } = this.props
-    const { title, start, end, desc, id } = this.props.currentEvent
+    const { title, start, end, desc, id } = this.state
 
     return (
       <ReactModal
@@ -73,7 +88,7 @@ export default class Modal extends Component {
         onRequestClose={closeModal}
         closeTimeoutMS={150}
       >
-        <div className="form-wrapper">
+        <form onSubmit={this.handleSubmitButton} className="form-wrapper">
           <div>
             <label htmlFor="id-num">Event id: ({id})</label>
             <input type="text" value={title} onChange={this.handleTitleChange} placeholder="Title" required />
@@ -130,13 +145,14 @@ export default class Modal extends Component {
           <div>
             <textarea onChange={this.handleDescChange} value={desc} placeholder="description" />
           </div>
+          <div className="modal-buttons">
+          {id && <button onClick={this.handleDeleteButton}>Delete event</button>}
+          <button onClick={closeModal}>Cancel</button>
+    
+          <button type="submit">Save</button>
         </div>
-
-        <div className="modal-buttons">
-          {id && <button onClick={this.handleEditDelete}>delete event</button>}
-          <button onClick={closeModal}>cancel</button>
-          <button onClick={this.handleEditSave}>save</button>
-        </div>
+        
+        </form>
       </ReactModal>
     )
   }

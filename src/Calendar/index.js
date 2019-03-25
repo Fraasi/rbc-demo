@@ -34,6 +34,7 @@ export default class Calendar extends Component {
         start: new Date(),
         end: new Date(),
         desc: 'Description',
+        id: 999
       },
     }
   }
@@ -79,12 +80,19 @@ export default class Calendar extends Component {
   }
 
   selectSlot = (event) => {
-    // console.log('selectSlot:', e)
     this.openModal(event)
   }
 
   selectEvent = (event) => {
     this.openModal(event)
+  }
+
+  openModal = (event) => {
+    // console.log('currentevent:', event)
+    this.setState({
+      modalIsOpen: true,
+      currentEvent: event
+    });
   }
 
   getEventStyle(event, start, end, isSelected) {
@@ -96,14 +104,6 @@ export default class Calendar extends Component {
       style.backgroundColor = event.bgcolor
     }
     return { style }
-  }
-
-  openModal = (event) => {
-    // console.log('currentevent:', event)
-    this.setState({
-      modalIsOpen: true,
-      currentEvent: event
-    });
   }
 
   closeModal = () => {
@@ -119,10 +119,10 @@ export default class Calendar extends Component {
     })
   }
 
-  handleEventSave = () => {
-    console.log('handleEventSave:', this.state.currentEvent)
-    const index = this.state.events.findIndex(event => event.id === this.state.currentEvent.id )
-    const { title, start, end, desc, id } = this.state.currentEvent
+  handleEventSave = (newEvent) => {
+    console.log('handleEventSave:', newEvent)
+    const index = this.state.events.findIndex( event => event.id === newEvent.id )
+    const { title, start, end, desc, id } = newEvent
     if (index > -1) {
       const newEvents = this.state.events
       newEvents[index] = {
@@ -136,9 +136,7 @@ export default class Calendar extends Component {
         events: newEvents
       })
     } else {
-      const newID = this.state.events.reduce((acc, event) => {
-        return event.id > acc ? event.id : acc
-      }, 0)
+      const biggestID = this.state.events.reduce((acc, event) => event.id > acc ? event.id : acc, 0)
       this.setState({
         events: [
           ...this.state.events,
@@ -147,7 +145,7 @@ export default class Calendar extends Component {
             start,
             end,
             desc,
-            id: newID + 1
+            id: biggestID + 1
           },
         ],
       })
@@ -191,7 +189,15 @@ export default class Calendar extends Component {
           eventPropGetter={this.getEventStyle}
         // culture="fi-FI"
         />
-        <Modal modalIsOpen={this.state.modalIsOpen} closeModal={this.closeModal} handleModalEventEdit={this.handleModalEventEdit} currentEvent={this.state.currentEvent} handleEventSave={this.handleEventSave} handleEventDelete={this.handleEventDelete}/>
+        <Modal 
+          modalIsOpen={this.state.modalIsOpen}
+          closeModal={this.closeModal}
+          handleModalEventEdit={this.handleModalEventEdit}
+          currentEvent={this.state.currentEvent}
+          handleEventSave={this.handleEventSave}
+          handleEventDelete={this.handleEventDelete}
+          key={this.state.currentEvent.id}
+        />
       </>
     )
   }
