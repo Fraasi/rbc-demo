@@ -61,7 +61,7 @@ class DatePick extends Component {
 export default class Modal extends Component {
   constructor(props) {
     super(props);
-    const { title, start, end, desc, id } = this.props.modalEvent
+    const { title = '', start, end, desc, id } = this.props.modalEvent
     this.state = {
       title,
       start,

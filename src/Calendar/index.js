@@ -31,10 +31,10 @@ export default class Calendar extends Component {
       modalIsOpen: false,
       isNewEvent: false,
       modalEvent: {
-        title: null,
+        title: '',
         start: null,
         end: null,
-        desc: null,
+        desc: '',
         id: null
       },
     }
@@ -187,7 +187,6 @@ export default class Calendar extends Component {
           onEventResize={this.resizeEvent}
           selectable={true}
           onSelectEvent={this.selectEvent}
-          onDoubleClickEvent={this.doubleClickEvent}
           onSelectSlot={this.selectSlot}
           popup={true}
           tooltipAccessor={(e) => e.title}
