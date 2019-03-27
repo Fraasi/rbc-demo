@@ -2,7 +2,7 @@ const thisMonth = new Date().getMonth()
 
 export default [
   {
-    id: 0,
+    id: 1,
     title: 'All Day Event very long title',
     allDay: true,
     start: new Date(2019, thisMonth, 1, 0),

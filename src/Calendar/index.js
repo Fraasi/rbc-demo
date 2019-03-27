@@ -29,12 +29,13 @@ export default class Calendar extends Component {
     this.state = {
       events: events,
       modalIsOpen: false,
-      currentEvent: {
-        title: 'Title',
-        start: new Date(),
-        end: new Date(),
-        desc: 'Description',
-        id: 999
+      isNewEvent: false,
+      modalEvent: {
+        title: null,
+        start: null,
+        end: null,
+        desc: null,
+        id: null
       },
     }
   }
@@ -74,24 +75,30 @@ export default class Calendar extends Component {
     })
   }
 
-  doubleClickEvent(e) {
-    // edit event
-    console.log('doubleClickEvent:', e)
-  }
-
   selectSlot = (event) => {
+    this.setState({ isNewEvent: true })
+    // Need to set new Date objects,
+    // otherwise changing one changes both.
+    event.start = new Date(event.start)
+    event.start.setHours(10)
+    event.end = new Date(event.end)
+    event.end.setHours(22)
     this.openModal(event)
   }
 
   selectEvent = (event) => {
+    this.setState({ isNewEvent: false })
     this.openModal(event)
   }
 
   openModal = (event) => {
-    // console.log('currentevent:', event)
+    const id = event.id ? event.id : Date.now()
     this.setState({
       modalIsOpen: true,
-      currentEvent: event
+      modalEvent: {
+        ...event,
+        id
+      }
     });
   }
 
@@ -111,11 +118,10 @@ export default class Calendar extends Component {
   }
 
   handleModalEventEdit = (key, newValue) => {
-    const newData = { ...this.state.currentEvent }
+    const newData = { ...this.state.modalEvent }
     newData[key] = newValue
-    // console.log('newData:', newData)
     this.setState({
-      currentEvent: newData
+      modalEvent: newData
     })
   }
 
@@ -136,7 +142,6 @@ export default class Calendar extends Component {
         events: newEvents
       })
     } else {
-      const biggestID = this.state.events.reduce((acc, event) => event.id > acc ? event.id : acc, 0)
       this.setState({
         events: [
           ...this.state.events,
@@ -145,7 +150,7 @@ export default class Calendar extends Component {
             start,
             end,
             desc,
-            id: biggestID + 1
+            id
           },
         ],
       })
@@ -154,7 +159,7 @@ export default class Calendar extends Component {
 
   handleEventDelete = () => {
     const index = this.state.events.findIndex(event => {
-      return event.id === this.state.currentEvent.id
+      return event.id === this.state.modalEvent.id
     })
     if (index > -1) {
       const newEvents = this.state.events
@@ -187,16 +192,16 @@ export default class Calendar extends Component {
           popup={true}
           tooltipAccessor={(e) => e.title}
           eventPropGetter={this.getEventStyle}
-        // culture="fi-FI"
         />
         <Modal 
           modalIsOpen={this.state.modalIsOpen}
           closeModal={this.closeModal}
           handleModalEventEdit={this.handleModalEventEdit}
-          currentEvent={this.state.currentEvent}
+          modalEvent={this.state.modalEvent}
           handleEventSave={this.handleEventSave}
           handleEventDelete={this.handleEventDelete}
-          key={this.state.currentEvent.id}
+          isNewEvent={this.state.isNewEvent}
+          key={this.state.modalEvent.id}
         />
       </>
     )

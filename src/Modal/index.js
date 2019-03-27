@@ -32,17 +32,42 @@ class DateInputButton extends Component {
   }
 }
 
+class DatePick extends Component {
+  render() {
+    return (
+      <DatePicker
+      {...this.props}
+      customInput={<DateInputButton />}
+      required={true}
+      dateFormat="dd/MM/yyyy HH:mm"
+      showTimeSelect={true}
+      timeCaption="Time"
+      timeFormat="HH:mm"
+      timeIntervals={30}
+      showMonthDropdown={true}
+      showWeekNumbers={true}
+      shouldCloseOnSelect={true}
+      popperModifiers={{
+        offset: {
+          enabled: true,
+          offset: '-40px, 0px'
+        }
+      }}
+    />
+    )
+  }
+}
+
 export default class Modal extends Component {
   constructor(props) {
     super(props);
-    console.log('constructor:', props)
-    const { title, start, end, desc, id } = this.props.currentEvent
+    const { title, start, end, desc, id } = this.props.modalEvent
     this.state = {
-        title: title || '',
-        start: start || new Date(),
-        end: end || new Date(),
-        desc: desc || '',
-        id: id || 999,
+      title,
+      start,
+      end,
+      desc,
+      id,
     }
   }
 
@@ -51,7 +76,6 @@ export default class Modal extends Component {
   }
 
   handleStartDateChange = (newStartDate) => {
-    console.log('newStartDate:', newStartDate)
     this.setState({ start: newStartDate })
   }
 
@@ -70,88 +94,61 @@ export default class Modal extends Component {
 
   handleSubmitButton = (e) => {
     e.preventDefault()
-    console.log('submit:', this.state)
+    if (this.state.start > this.state.end) {
+      alert(`Error, time paradox!!!\nEvent end date can not be earlier than event start date!`)
+      return
+    }
     this.props.handleEventSave(this.state)
     this.props.closeModal()
   }
 
   render() {
-    const { modalIsOpen, closeModal } = this.props
-    const { title, start, end, desc, id } = this.state
-
+    const { modalIsOpen, closeModal, isNewEvent } = this.props
+    const { title, start, end, desc } = this.state
     return (
       <ReactModal
         isOpen={modalIsOpen}
         style={modalCustomStyles}
-        contentLabel="Example Modal"
         shouldCloseOnOverlayClick={true}
         onRequestClose={closeModal}
         closeTimeoutMS={150}
       >
         <form onSubmit={this.handleSubmitButton} className="form-wrapper">
           <div>
-            <label htmlFor="id-num">Event id: ({id})</label>
-            <input type="text" value={title} onChange={this.handleTitleChange} placeholder="Title" required />
+            <label>
+              Event title
+              <input type="text" value={title} onChange={this.handleTitleChange} placeholder="No title" required autoFocus />
+            </label>
           </div>
           <br />
           <div>
-            <label htmlFor="start-time">Event start </label>
-            <DatePicker
-              customInput={<DateInputButton />}
-              selected={start}
-              onChange={this.handleStartDateChange}
-              required={true}
-              showTimeSelect={true}
-              showMonthDropdown={true}
-              showWeekNumbers={true}
-              shouldCloseOnSelect={false}
-              timeFormat="HH:mm"
-              timeIntervals={15}
-              dateFormat="dd/MM/yyyy H:mm"
-              timeCaption="time"
-              popperModifiers={{
-                offset: {
-                  enabled: true,
-                  offset: '-40px, 0px'
-                }
-              }}
-            />
+            <label>
+              Event start
+              <DatePick
+                selected={start}
+                onChange={this.handleStartDateChange}
+              />
+            </label>
           </div>
           <br />
           <div>
-            <label htmlFor="end-time">Event end &nbsp;</label>
-            <DatePicker
-              customInput={<DateInputButton />}
-              selected={end}
-              onChange={this.handleEndDateChange}
-              required={true}
-              showTimeSelect={true}
-              showMonthDropdown={true}
-              showWeekNumbers={true}
-              shouldCloseOnSelect={false}
-              timeFormat="HH:mm"
-              timeIntervals={15}
-              dateFormat="dd/MM/yyyy H:mm"
-              timeCaption="time"
-              popperModifiers={{
-                offset: {
-                  enabled: true,
-                  offset: '-40px, 0px'
-                }
-              }}
-            />
+            <label>
+              Event end
+              <DatePick
+                selected={end}
+                onChange={this.handleEndDateChange}
+              />
+            </label>
           </div>
-            <br />
+          <br />
           <div>
-            <textarea onChange={this.handleDescChange} value={desc} placeholder="description" />
+            <textarea onChange={this.handleDescChange} value={desc} placeholder="Event description" />
           </div>
           <div className="modal-buttons">
-          {id && <button onClick={this.handleDeleteButton}>Delete event</button>}
-          <button onClick={closeModal}>Cancel</button>
-    
-          <button type="submit">Save</button>
-        </div>
-        
+            {!isNewEvent && <button type="button" onClick={this.handleDeleteButton}>Delete event</button>}
+            <button type="button" onClick={closeModal}>Cancel</button>
+            <button type="submit">Save</button>
+          </div>
         </form>
       </ReactModal>
     )
