@@ -85,11 +85,4 @@ export default [
     start: new Date(new Date().setHours(16)),
     end: new Date(new Date().setHours(18)),
   },
-  {
-    id: 15,
-    title: 'recurring Event',
-    start: new Date(2019, 2, 20, 19, 30, 0),
-    end: new Date(2019, 2, 20, 21, 0, 0),
-    recurring: true,
-  },
 ]

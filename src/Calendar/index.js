@@ -58,7 +58,6 @@ export default class Calendar extends Component {
     this.setState({
       events: nextEvents,
     })
-    // alert(`${event.title} was dropped onto ${updatedEvent.start}`)
   }
 
   resizeEvent = ({ event, start, end }) => {
@@ -77,12 +76,8 @@ export default class Calendar extends Component {
 
   selectSlot = (event) => {
     this.setState({ isNewEvent: true })
-    // Need to set new Date objects,
-    // otherwise changing one changes both.
-    event.start = new Date(event.start)
-    event.start.setHours(10)
-    event.end = new Date(event.end)
-    event.end.setHours(22)
+    event.start = event.slots[0]
+    event.end = event.slots[event.slots.length - 1]
     this.openModal(event)
   }
 
@@ -126,18 +121,10 @@ export default class Calendar extends Component {
   }
 
   handleEventSave = (newEvent) => {
-    console.log('handleEventSave:', newEvent)
     const index = this.state.events.findIndex( event => event.id === newEvent.id )
-    const { title, start, end, desc, id } = newEvent
     if (index > -1) {
       const newEvents = this.state.events
-      newEvents[index] = {
-        title,
-        start,
-        end,
-        desc,
-        id,
-      }
+      newEvents[index] = { ...newEvent }
       this.setState({
         events: newEvents
       })
@@ -145,13 +132,7 @@ export default class Calendar extends Component {
       this.setState({
         events: [
           ...this.state.events,
-          {
-            title,
-            start,
-            end,
-            desc,
-            id
-          },
+          { ...newEvent },
         ],
       })
     }
