@@ -2,6 +2,7 @@
   "name": "rbc-demo",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "react": "^16.8.2",
     "react-big-calendar": "^0.20.3",
