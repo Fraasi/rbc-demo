@@ -2,7 +2,7 @@
   z-index: 5;
   background-color: rgba(31, 31, 31, 0.75) !important;
   opacity: 0;
-  transition: opacity 500ms ease-in-out;
+  transition: opacity 250ms ease-in-out;
 }
 
 .ReactModal__Overlay--after-open{

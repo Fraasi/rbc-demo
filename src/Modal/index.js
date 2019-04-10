@@ -36,24 +36,24 @@ class DatePick extends Component {
   render() {
     return (
       <DatePicker
-      {...this.props}
-      customInput={<DateInputButton />}
-      required={true}
-      dateFormat="dd/MM/yyyy HH:mm"
-      showTimeSelect={true}
-      timeCaption="Time"
-      timeFormat="HH:mm"
-      timeIntervals={30}
-      showMonthDropdown={true}
-      showWeekNumbers={true}
-      shouldCloseOnSelect={true}
-      popperModifiers={{
-        offset: {
-          enabled: true,
-          offset: '-40px, 0px'
-        }
-      }}
-    />
+        {...this.props}
+        customInput={<DateInputButton />}
+        required={true}
+        dateFormat="dd/MM/yyyy HH:mm"
+        showTimeSelect={true}
+        timeCaption="Time"
+        timeFormat="HH:mm"
+        timeIntervals={30}
+        showMonthDropdown={true}
+        showWeekNumbers={true}
+        shouldCloseOnSelect={true} // doesn't work, oh well?
+        popperModifiers={{
+          offset: {
+            enabled: true,
+            offset: '-40px, 0px'
+          }
+        }}
+      />
     )
   }
 }
@@ -111,7 +111,7 @@ export default class Modal extends Component {
         style={modalCustomStyles}
         shouldCloseOnOverlayClick={true}
         onRequestClose={closeModal}
-        closeTimeoutMS={150}
+        closeTimeoutMS={200}
       >
         <form onSubmit={this.handleSubmitButton} className="form-wrapper">
           <div>

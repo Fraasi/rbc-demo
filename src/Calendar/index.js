@@ -99,12 +99,19 @@ export default class Calendar extends Component {
 
   getEventStyle(event, start, end, isSelected) {
     const style = {}
-    if (start.getDay() === new Date().getDay()) {
+    const todayDate = new Date().getDate()
+
+    if (start.getDate() === todayDate) {
       style.backgroundColor = 'green'
+    } else if (start.getDate() < todayDate) {
+      style.backgroundColor = 'red'
+    } else if (start.getDate() > todayDate) {
+      style.backgroundColor = 'blue'
     }
     if (event.bgcolor) {
       style.backgroundColor = event.bgcolor
     }
+
     return { style }
   }
 
@@ -159,6 +166,7 @@ export default class Calendar extends Component {
           formats={formats}
           events={this.state.events}
           defaultView={'month'}
+          defaultDate={new Date()}  // onSelectEvent click doesn't fire without this
           min={moment('10:00am', 'H:mma').toDate()}
           max={moment('09:59pm', 'H:mma').toDate()}
           step={60}
